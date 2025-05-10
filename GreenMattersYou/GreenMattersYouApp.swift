@@ -6,27 +6,22 @@
 //
 
 import SwiftUI
-import SwiftData
+import Firebase
 
 @main
 struct GreenMattersYouApp: App {
-    var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            Item.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
-        do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-        } catch {
-            fatalError("Could not create ModelContainer: \(error)")
-        }
-    }()
-
+    @StateObject private var navigationManager = NavigationManager()
+    
+    init() {
+        FirebaseApp.configure()
+    }
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            NavigationStack(path: $navigationManager.path) {
+                ContentView()
+                    .environmentObject(navigationManager)
+            }
         }
-        .modelContainer(sharedModelContainer)
     }
 }
